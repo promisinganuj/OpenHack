@@ -67,6 +67,10 @@
         "CloudFictitiousCompanyNamePrefix": {
             "type": "string",
             "defaultValue": "southridge"
+        },
+        "purviewName": {
+            "type": "string",
+            "defaultValue": "[format('azurePurview{0}', uniqueString(resourceGroup().id))]"
         }
     },
     "variables": {},
@@ -131,6 +135,23 @@
                         "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
                     }
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Purview/accounts",
+            "apiVersion": "2021-12-01",
+            "name": "[parameters('purviewName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+              "name": "Standard",
+              "capacity": 1
+            },
+            "identity": {
+              "type": "SystemAssigned"
+            },
+            "properties": {
+              "publicNetworkAccess": "Enabled",
+              "managedResourceGroupName": "[format('mrg-{0}', parameters('purviewName'))]"
             }
         }
     ]
